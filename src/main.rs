@@ -14,6 +14,7 @@ use std::time::Duration;
 
     
 mod state;
+mod utils;
 // mod view;
 
 fn main() {

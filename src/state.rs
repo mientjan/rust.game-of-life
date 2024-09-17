@@ -1,5 +1,4 @@
-
-
+use crate::utils;
 
 // only works if ther grid is rectangular
 pub fn update_grid(grid: &mut Vec<Vec<bool>>) {
@@ -66,7 +65,8 @@ pub fn prepare_grid(grid: &mut Vec<Vec<bool>>) {
 
     for i in 0..rows {
         for j in 0..cols {
-            grid[i][j] = rand::random();
+            println!("i:{},j:{},v:{},f:{}", i, j, (i * cols + j), utils::is_fibonacci_number((i * cols + j).try_into().unwrap()));
+            grid[i][j] = utils::isFibonacci((i * cols + j).try_into().unwrap());
         }
     }
 }
