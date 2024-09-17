@@ -11,8 +11,6 @@ use sdl2::rect::Rect;
 // use sdl2::video::Window;
 use std::time::Duration;
 
-
-    
 mod state;
 mod utils;
 // mod view;
