@@ -1,0 +1,13 @@
+[package]
+name = "game_of_life"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sdl2 = "0.37.0" 
+console_log = { version = "0.2", optional = true }
+log = "0.4.22"
+rand = "0.8.5"
+
+[features]
+console_log = ["dep:console_log"]
