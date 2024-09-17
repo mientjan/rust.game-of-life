@@ -10,8 +10,6 @@ pub fn update_grid(grid: &mut Vec<Vec<bool>>) {
         for j in 0..cols {
             let live_neighbors = count_live_neighbors(&grid, i, j);
 
-            // println!("x:{},y:{},live_neighbors: {}", i, j, live_neighbors);
-
             if grid[i][j] {
                 // Any live cell with fewer than two live neighbors dies
                 // due to underpopulation.
@@ -65,7 +63,6 @@ pub fn prepare_grid(grid: &mut Vec<Vec<bool>>) {
 
     for i in 0..rows {
         for j in 0..cols {
-            println!("i:{},j:{},v:{},f:{}", i, j, (i * cols + j), utils::is_fibonacci_number((i * cols + j).try_into().unwrap()));
             grid[i][j] = utils::isFibonacci((i * cols + j).try_into().unwrap());
         }
     }
