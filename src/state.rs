@@ -1,5 +1,5 @@
-use crate::{objects::Dot, utils};
-use crate::utils::isFibonacci;
+use crate::{objects::Dot};
+use crate::utils::is_fibonacci;
 
 // only works if ther grid is rectangular
 pub fn update(grid: &mut Vec<bool>, changes: &mut Vec<Dot>, changes_length: &mut u32, width: u32, height: u32, size: u32 ) {
@@ -79,12 +79,8 @@ fn count_live_neighbors(grid: &Vec<bool>, width: u32, height: u32, x: u32, y: u3
 pub fn init(changes: &mut Vec<Dot>, changes_length: &mut u32, width: u32, height: u32 ) {
     let size = width * height;
     for i in 0..size {
-        let x = i % width;
-        // let y = i / size | 0;
-
         changes[i as usize].index = i;
-        // changes[i as usize].state = if x > 10 && x < 20 { true } else { false };
-        changes[i as usize].state = isFibonacci(i as usize);
+        changes[i as usize].state = is_fibonacci(i as usize);
     }
 
     *changes_length = size as u32;

@@ -1,7 +1,5 @@
-use sdl2::pixels::Color;
 use sdl2::rect::Rect;
-use sdl2::render::{Canvas, Texture};
-use sdl2::video::Window;
+use sdl2::render::{Texture};
 use crate::objects::Dot;
 use crate::properties::COLORS;
 
@@ -12,7 +10,6 @@ pub fn update_texture(
     screen: &Rect
 ) {
     let width = screen.width() as usize;
-    let height = screen.height() as usize;
 
     texture.with_lock(None, |buffer: &mut [u8], pitch: usize| {
 

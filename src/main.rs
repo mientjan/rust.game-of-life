@@ -1,17 +1,10 @@
 
 #![allow(warnings)]
 
-// use log::info;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-// use sdl2::pixels::Color;
 use sdl2::rect::Rect;
-// use sdl2::video;
-// use sdl2::render::WindowCanvas;
-// use sdl2::video::Window;
 use std::time::Duration;
-use sdl2::libc::stat;
-use sdl2::pixels::PixelFormatEnum;
 
 mod state;
 mod objects;
@@ -21,7 +14,7 @@ mod properties;
 
 use crate::objects::{Dot};
 use crate::properties::COLORS;
-use crate::utils::{create_grid_texture, isFibonacci};
+use crate::utils::{create_grid_texture, is_fibonacci};
 
 fn main() {
     
