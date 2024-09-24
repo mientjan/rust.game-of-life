@@ -1,69 +1,99 @@
-use crate::utils;
+use crate::{objects::Dot, utils};
+use crate::utils::isFibonacci;
 
 // only works if ther grid is rectangular
-pub fn update_grid(grid: &mut Vec<Vec<bool>>) {
-    let rows = grid.len();
-    let cols = grid[0].len();
-    let mut new_grid = vec![vec![false; cols]; rows];
+pub fn update(grid: &mut Vec<bool>, changes: &mut Vec<Dot>, changes_length: &mut u32, width: u32, height: u32, size: u32 ) {
 
-    for i in 0..rows {
-        for j in 0..cols {
-            let live_neighbors = count_live_neighbors(&grid, i, j);
+    let mut length: usize = 0;
+    for i in 0..size {
+        let x = i % width;
+        let y = i / width | 0;
+        
+        let live_neighbors = count_live_neighbors(&grid, width, height, x, y);
+        let val = grid[i as usize];
 
-            if grid[i][j] {
-                // Any live cell with fewer than two live neighbors dies
-                // due to underpopulation.
-                if live_neighbors < 2 {
-                    new_grid[i][j] = false;
-                }
-                // Any live cell with two or three live neighbors lives
-                // on to the next generation.
-                else if live_neighbors == 2 || live_neighbors == 3 {
-                    new_grid[i][j] = true;
-                }
-                // Any live cell with more than three live neighbors dies
-                // due to overpopulation.
-                else {
-                    new_grid[i][j] = false;
-                }
-            } else {
-                // Any dead cell with exactly three live neighbors becomes
-                // a live cell, as if by reproduction.
-                if live_neighbors == 3 {
-                    new_grid[i][j] = true;
-                }
+        if val {
+            if(!(live_neighbors == 2 || live_neighbors == 3)){
+                changes[length].index = i;
+                changes[length].state = false;
+                length += 1;
+            }
+        } else if (live_neighbors == 3) {
+            if(val == false){
+                changes[length].index = i;
+                changes[length].state = true;
+                length += 1;
             }
         }
     }
 
-    *grid = new_grid;
+    *changes_length = length as u32;
 }
 
-fn count_live_neighbors(grid: &Vec<Vec<bool>>, row: usize, col: usize) -> usize {
-    let rows = grid.len();
-    let cols = grid[0].len();
-    let mut count = 0;
+fn count_live_neighbors(grid: &Vec<bool>, width: u32, height: u32, x: u32, y: u32) -> u8 {
+    let mut live_neighbors = 0;
 
-    for i in (row as isize - 1)..=(row as isize + 1) {
-        for j in (col as isize - 1)..=(col as isize + 1) {
-            if i >= 0 && i < rows as isize && j >= 0 && j < cols as isize && !(i == row as isize && j == col as isize) {
-                if grid[i as usize][j as usize] {
-                    count += 1;
-                }
-            }
-        }
+    // Check the top-left neighbor
+    if x > 0 && y > 0 && grid[(y - 1) as usize * width as usize + (x - 1) as usize] {
+        live_neighbors += 1;
     }
 
-    return count;
+    // Check the top neighbor
+    if y > 0 && grid[(y - 1) as usize * width as usize + x as usize] {
+        live_neighbors += 1;
+    }
+
+    // Check the top-right neighbor
+    if x < width - 1 && y > 0 && grid[(y - 1) as usize * width as usize + (x + 1) as usize] {
+        live_neighbors += 1;
+    }
+
+    // Check the left neighbor
+    if x > 0 && grid[y as usize * width as usize + (x - 1) as usize] {
+        live_neighbors += 1;
+    }
+
+    // Check the right neighbor
+    if x < width - 1 && grid[y as usize * width as usize + (x + 1) as usize] {
+        live_neighbors += 1;
+    }
+
+    // Check the bottom-left neighbor
+    if x > 0 && y < height - 1 && grid[(y + 1) as usize * width as usize + (x - 1) as usize] {
+        live_neighbors += 1;
+    }
+
+    // Check the bottom neighbor
+    if y < height - 1 && grid[(y + 1) as usize * width as usize + x as usize] {
+        live_neighbors += 1;
+    }
+
+    // Check the bottom-right neighbor
+    if x < width - 1 && y < height - 1 && grid[(y + 1) as usize * width as usize + (x + 1) as usize] {
+        live_neighbors += 1;
+    }
+
+    return live_neighbors;
 }
 
-pub fn prepare_grid(grid: &mut Vec<Vec<bool>>) {
-    let rows = grid.len();
-    let cols = grid[0].len();
+pub fn init(changes: &mut Vec<Dot>, changes_length: &mut u32, width: u32, height: u32 ) {
+    let size = width * height;
+    for i in 0..size {
+        let x = i % width;
+        // let y = i / size | 0;
 
-    for i in 0..rows {
-        for j in 0..cols {
-            grid[i][j] = utils::isFibonacci((i * cols + j).try_into().unwrap());
-        }
+        changes[i as usize].index = i;
+        // changes[i as usize].state = if x > 10 && x < 20 { true } else { false };
+        changes[i as usize].state = isFibonacci(i as usize);
     }
+
+    *changes_length = size as u32;
+}
+
+pub fn apply_changes(grid: &mut Vec<bool>, changes: &Vec<Dot>, changes_length: &mut u32) {
+    for i in 0..(*changes_length) {
+        grid[changes[i as usize].index as usize] = changes[i as usize].state;
+    }
+
+    *changes_length = 0;
 }

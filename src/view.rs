@@ -1,33 +1,33 @@
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
-use sdl2::render::Canvas;
+use sdl2::render::{Canvas, Texture};
 use sdl2::video::Window;
+use crate::objects::Dot;
+use crate::properties::COLORS;
 
-pub fn draw(grid: &[Vec<bool>], canvas: &mut Canvas<Window>) {
-    // Clear the canvas
-    canvas.set_draw_color(Color::BLACK);
-    canvas.clear();
+pub fn update_texture(
+    texture: &mut Texture,
+    changes: &Vec<Dot>,
+    changes_length: &u32,
+    screen: &Rect
+) {
+    let width = screen.width() as usize;
+    let height = screen.height() as usize;
 
-    // Calculate the size of each cell based on the canvas dimensions and grid size
-    let cell_width = canvas.viewport().width() as usize / grid[0].len();
-    let cell_height = canvas.viewport().height() as usize / grid.len();
+    texture.with_lock(None, |buffer: &mut [u8], pitch: usize| {
 
-    // Iterate over each cell in the grid
-    for (row, row_cells) in grid.iter().enumerate() {
-        for (col, &cell) in row_cells.iter().enumerate() {
-            // Calculate the position and size of the cell rectangle
-            let x = (col * cell_width) as i32;
-            let y = (row * cell_height) as i32;
-            let width = cell_width as u32;
-            let height = cell_height as u32;
+        for i in 0..*changes_length as usize {
+            let index = changes[i].index as usize;
+            let x = index % width;
+            let mut y = index / width | 0;
+            y = y * pitch;
+            let offset = y + x * 3;  // Each pixel is 3 bytes (RGB24 format)
 
-            // Set the color of the cell based on its state (alive or dead)
-            let color = if cell { Color::WHITE } else { Color::BLACK };
+            let cell_color = if changes[i].state { COLORS.white } else { COLORS.black };
 
-            // Draw the cell rectangle on the canvas
-            canvas.set_draw_color(color);
-            canvas.fill_rect(Rect::new(x, y, width, height)).unwrap();
+            buffer[offset] = cell_color.r;
+            buffer[offset + 1] = cell_color.g;   // G
+            buffer[offset + 2] = cell_color.b;  // B
         }
-    }
-
+    }).unwrap();
 }

@@ -11,3 +11,9 @@ rand = "0.8.5"
 
 [features]
 console_log = ["dep:console_log"]
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
