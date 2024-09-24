@@ -14,7 +14,7 @@ mod properties;
 
 use crate::objects::{Dot};
 use crate::properties::COLORS;
-use crate::utils::{create_grid_texture, is_fibonacci};
+use crate::utils::{create_grid_texture};
 
 fn main() {
     
